@@ -30,4 +30,16 @@ private:
 
 	//ray ast and grab what's in reach
 	void Grab();
+
+	//used when the grab button is released
+	void Release();
+
+	//find the (assumed) attached physics handle component
+	void FindPhysicsHandleComponent();
+
+	//find the (assumed) attached input component
+	void SetupInputComponent();
+
+	// return hit for first physics body in reach
+	const FHitResult GetFirstPhysicsBodyInReach();
 };
