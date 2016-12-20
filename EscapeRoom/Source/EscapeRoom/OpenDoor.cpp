@@ -21,20 +21,20 @@ UOpenDoor::UOpenDoor()
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
+	Owner = GetOwner();
+
 	if (!PressurePlate)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No pressure plate found!"));
 	}
-	if (!Owner)
-	{
-		return;
-	}
-	Owner = GetOwner();
+
+
 }
 
 void UOpenDoor::OpenDoor()
 {
-	Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+	//Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
+	OnOpenRequest.Broadcast();
 }
 
 void UOpenDoor::CloseDoor()
