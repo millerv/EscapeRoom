@@ -12,8 +12,6 @@ UOpenDoor::UOpenDoor()
 	// off to improve performance if you don't need them.
 	bWantsBeginPlay = true;
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -27,36 +25,20 @@ void UOpenDoor::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No pressure plate found!"));
 	}
-
-
 }
 
-void UOpenDoor::OpenDoor()
-{
-	//Owner->SetActorRotation(FRotator(0.0f, OpenAngle, 0.0f));
-	OnOpenRequest.Broadcast();
-}
-
-void UOpenDoor::CloseDoor()
-{
-	Owner->SetActorRotation(FRotator(0.0f, 0.0f, 0.0f));
-}
 
 // Called every frame
 void UOpenDoor::TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction )
 {
 	Super::TickComponent( DeltaTime, TickType, ThisTickFunction );
-
-
-	if (GetTotalMassOfActorsOnPlate() > 60.0f) //TODO make non-magic #
+	if (GetTotalMassOfActorsOnPlate() > TriggerMass) 
 	{
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+		OnOpen.Broadcast();
 	}
-	//check if it's time to close the door
-	if ((GetWorld()->GetTimeSeconds() - LastDoorOpenTime) > DoorCloseDelay)
+	else
 	{
-		CloseDoor();
+		OnClose.Broadcast();
 	}
 }
 
@@ -78,7 +60,6 @@ float UOpenDoor::GetTotalMassOfActorsOnPlate()
 		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
 		UE_LOG(LogTemp, Warning, TEXT("%s is on plate"), *Actor->GetName());
 	}
-
 	return TotalMass;
 }
 
